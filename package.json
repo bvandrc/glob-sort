@@ -70,11 +70,10 @@
   "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "^2",
-    "@types/mock-fs": "^4",
     "@types/node": "^24",
     "@vitest/coverage-v8": "^4",
     "@vitest/expect": "^4",
-    "mock-fs": "^5",
+    "memfs": "^4",
     "tsdown": "^0.22",
     "typescript": "^7",
     "vitest": "^4"
