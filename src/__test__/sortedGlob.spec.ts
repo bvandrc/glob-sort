@@ -1,8 +1,29 @@
 import path from 'node:path'
-import mockFS from 'mock-fs'
-import { expect } from 'vitest'
+import { type NestedDirectoryJSON, vol } from 'memfs'
+import { expect, vi } from 'vitest'
 
 import { sortedGlob, sortedGlobSync } from '../sortedGlob'
+
+// The module under test globs through both faces of `node:fs`, so both are
+// pointed at the in-memory volume. memfs implements the fs API rather than
+// patching Node's internals the way mock-fs does, which is what broke on Node 26.
+vi.mock('node:fs', async () => {
+  const { fs } = await import('memfs')
+  return { ...fs, default: fs }
+})
+
+vi.mock('node:fs/promises', async () => {
+  const { fs } = await import('memfs')
+  return { ...fs.promises, default: fs.promises }
+})
+
+/** Replaces the mock file tree the patterns under test are globbed against. */
+const setMockFiles = (tree: NestedDirectoryJSON) => {
+  vol.reset()
+  // memfs roots the volume at `/` but resolves a relative pattern against the
+  // process, so a tree left at that default matches `cypress/tests/**` not at all.
+  vol.fromNestedJSON(tree, process.cwd())
+}
 
 const testDir = 'cypress/tests'
 
@@ -42,11 +63,11 @@ const mockContent = 'content'
 
 describe('sortedGlob', () => {
   afterEach(() => {
-    mockFS.restore()
+    vol.reset()
   })
 
   it('returns sorted file paths by numbered folder and sortOrder', async () => {
-    mockFS({
+    setMockFiles({
       [testDir]: {
         __common__: {
           'common-fns.ts': mockContent,
@@ -107,7 +128,7 @@ describe('sortedGlob', () => {
       ].map((p) => path.normalize(p))
     )
 
-    mockFS({
+    setMockFiles({
       [testDir]: {
         '01-widget-cards': {
           'booking-calendar.spec.ts': mockContent,
@@ -256,7 +277,7 @@ describe('sortedGlob', () => {
     )
 
     // README example
-    mockFS({
+    setMockFiles({
       '01-widget-cards': {
         'booking-calendar.spec.ts': '',
         'entrees.spec.ts': '',
