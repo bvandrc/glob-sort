@@ -1,0 +1,60 @@
+name: PR Reports
+
+# The jobs that report on a pull request by commenting on it.
+#
+# Note: Kept out of ci.yml because GitHub creates a check run for
+# every job in a workflow before it evaluates `if:`, so a single file
+# serving both push and pull_request reports the other event's jobs as
+# skipped checks on every PR.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write # reports posted as sticky PR comments
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  line-count:
+    name: Line Count
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: diffs the merge base against the head, so both have to be in the clone.
+
+      # Installs cloc, resolves the merge base, writes the job summary and posts the comment.
+      - name: Count the changed lines
+        uses: bvandrc/pr-diff-line-count@v1
+
+  bundle-size:
+    name: Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: the action checks out and builds the base branch to diff against
+
+      # Before setup-node, which needs pnpm on the path to find its store for
+      # `cache: pnpm`.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: pnpm
+
+      # What the published package weighs: tsdown's output, declarations aside.
+      - name: Compare bundle size
+        uses: preactjs/compressed-size-action@v2
+        with:
+          pattern: 'dist/**/*.{js,mjs,cjs}'
+          minimum-change-threshold: 100
+          sort-by: 'Change:desc'
