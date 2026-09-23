@@ -1,6 +1,5 @@
 import path from 'node:path'
 import { type NestedDirectoryJSON, vol } from 'memfs'
-import { expect, vi } from 'vitest'
 
 import type { SortedGlobOptions } from '../sorted-glob'
 import { sortedGlob, sortedGlobSync } from '../sorted-glob'
