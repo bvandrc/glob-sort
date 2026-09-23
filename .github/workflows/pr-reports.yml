@@ -27,7 +27,7 @@ jobs:
         with:
           fetch-depth: 0 # Required: diffs the merge base against the head, so both have to be in the clone.
 
-      # Installs cloc, resolves the merge base, writes the job summary and posts the comment.
+      # Installs cloc, resolves the merge base, writes the job summary, and posts the comment.
       - name: Count the changed lines
         uses: bvandrc/pr-diff-line-count@v1
 

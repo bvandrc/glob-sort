@@ -7,19 +7,18 @@ const NUM_PREFIX = /^\d+/
 
 export interface SortedGlobOptions extends GlobOptionsWithoutFileTypes {
   /**
-   * Sort order. Comes after number prefix sorting. Can be string to include,
-   * or regexp to match.
+   * Ordering rules applied within a numeric prefix, earliest rule first.
    *
-   * If no match in sort order, secondary sorting is alphabetical.
+   * A string matches a path segment that contains it; a regular expression
+   * matches what it tests true against. A segment that matches no rule sorts
+   * alphabetically, after the ones that do.
    *
-   * e.g. ['New', 'Edit', /^Delete/i, ]
+   * e.g. `['New', 'Edit', /^Delete/i]`
    */
   sortOrder?: readonly (RegExp | string)[]
 }
 
-/**
- * Sorts an array of file paths using the sorting algorithm
- */
+/** Orders paths by numeric prefix, then `sortOrder`, then alphabetically. */
 function sortPaths(
   matches: string[],
   sortOrder: SortedGlobOptions['sortOrder'] = []
