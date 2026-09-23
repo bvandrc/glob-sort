@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "type": "module",
-  "source": "src/sorted-glob.ts",
+  "source": "src/sortedGlob.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

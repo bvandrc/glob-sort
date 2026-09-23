@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { type NestedDirectoryJSON, vol } from 'memfs'
 
-import type { SortedGlobOptions } from '../sorted-glob'
-import { sortedGlob, sortedGlobSync } from '../sorted-glob'
+import type { SortedGlobOptions } from '../sortedGlob'
+import { sortedGlob, sortedGlobSync } from '../sortedGlob'
 
 // The module under test globs through both faces of `node:fs`, so both are
 // pointed at the in-memory volume. memfs implements the fs API rather than

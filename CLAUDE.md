@@ -2,7 +2,7 @@
 
 `glob-sort` — globs files and sorts them in a custom order, by numeric folder prefixes and caller-supplied string/regex rules. Useful for controlling test execution order in Cypress, Playwright, or Vitest. Published to npm, bundled by tsdown.
 
-- **Layout**: `src/sorted-glob.ts` is the whole package; unit tests live in `src/__tests__/`.
+- **Layout**: `src/sortedGlob.ts` is the whole package; unit tests live in `src/__tests__/`.
 - **Zero runtime dependencies** — keep `dependencies` empty.
 
 ## Code conventions
