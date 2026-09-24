@@ -25,6 +25,18 @@ const setMockFiles = (tree: NestedDirectoryJSON) => {
   vol.fromNestedJSON(tree, process.cwd())
 }
 
+/** A tree given as plain paths, for the cases that isolate one ordering rule. */
+const setMockPaths = (...paths: string[]) => {
+  vol.reset()
+  vol.fromJSON(
+    Object.fromEntries(paths.map((p) => [p, MOCK_CONTENT])),
+    process.cwd()
+  )
+}
+
+/** The paths as the sorter returns them, so a case can compare against literals. */
+const normalized = (paths: string[]) => paths.map((p) => path.normalize(p))
+
 type SortOrder = NonNullable<SortedGlobOptions['sortOrder']>
 
 const TEST_DIR = 'cypress/tests'
@@ -398,6 +410,97 @@ describe('sortedGlob', () => {
     })
 
     expect(output).toEqual(README_EXPECTED)
+  })
+
+  it('orders numeric prefixes by value, not by their digits', async () => {
+    setMockPaths('2-b/a.spec.ts', '10-c/a.spec.ts', '1-a/a.spec.ts')
+
+    // Alphabetically `10-c` would come second; the whole point of the prefix
+    // is that it does not.
+    expect(await sortedGlob('**/*.spec.ts')).toEqual(
+      normalized(['1-a/a.spec.ts', '2-b/a.spec.ts', '10-c/a.spec.ts'])
+    )
+  })
+
+  it('reads the prefix off a file as readily as off a folder', async () => {
+    setMockPaths('2-b.spec.ts', '10-c.spec.ts', '1-a.spec.ts')
+
+    expect(await sortedGlob('*.spec.ts')).toEqual(
+      normalized(['1-a.spec.ts', '2-b.spec.ts', '10-c.spec.ts'])
+    )
+  })
+
+  it('puts everything unnumbered after everything numbered', async () => {
+    setMockPaths('zz/a.spec.ts', '9-later/a.spec.ts', 'aa/a.spec.ts')
+
+    expect(await sortedGlob('**/*.spec.ts')).toEqual(
+      normalized(['9-later/a.spec.ts', 'aa/a.spec.ts', 'zz/a.spec.ts'])
+    )
+  })
+
+  it('falls back to alphabetical when no rules are given', async () => {
+    setMockPaths('b.spec.ts', 'a.spec.ts', 'c.spec.ts')
+
+    expect(await sortedGlob('*.spec.ts')).toEqual(
+      normalized(['a.spec.ts', 'b.spec.ts', 'c.spec.ts'])
+    )
+  })
+
+  it('matches a string rule anywhere in the segment, ignoring case', async () => {
+    setMockPaths('alpha.spec.ts', 'zebra-NEW.spec.ts')
+
+    expect(await sortedGlob('*.spec.ts', { sortOrder: ['new'] })).toEqual(
+      normalized(['zebra-NEW.spec.ts', 'alpha.spec.ts'])
+    )
+  })
+
+  it('matches a regular expression rule by testing it', async () => {
+    setMockPaths('alpha.spec.ts', 'zebra-new.spec.ts')
+
+    // A regex is not lowercased first, so its own flags decide the casing.
+    expect(await sortedGlob('*.spec.ts', { sortOrder: [/^zebra/] })).toEqual(
+      normalized(['zebra-new.spec.ts', 'alpha.spec.ts'])
+    )
+  })
+
+  it('lets the earlier rule win over a later one', async () => {
+    setMockPaths('new.spec.ts', 'edit.spec.ts')
+
+    expect(
+      await sortedGlob('*.spec.ts', { sortOrder: ['edit', 'new'] })
+    ).toEqual(normalized(['edit.spec.ts', 'new.spec.ts']))
+  })
+
+  it('sorts what no rule matched alphabetically, after what did', async () => {
+    setMockPaths('b.spec.ts', 'new.spec.ts', 'a.spec.ts')
+
+    expect(await sortedGlob('*.spec.ts', { sortOrder: ['new'] })).toEqual(
+      normalized(['new.spec.ts', 'a.spec.ts', 'b.spec.ts'])
+    )
+  })
+
+  it('applies a rule to the segment it matches, not the whole path', async () => {
+    setMockPaths('alpha/z.spec.ts', 'beta/a.spec.ts')
+
+    // `beta` wins on the folder segment, so its file comes first even though
+    // the paths compare the other way alphabetically.
+    expect(await sortedGlob('**/*.spec.ts', { sortOrder: ['beta'] })).toEqual(
+      normalized(['beta/a.spec.ts', 'alpha/z.spec.ts'])
+    )
+  })
+
+  it('sorts the union of several patterns as one list', async () => {
+    setMockPaths('2-b/a.spec.ts', '1-a/a.test.ts')
+
+    expect(await sortedGlob(['**/*.spec.ts', '**/*.test.ts'])).toEqual(
+      normalized(['1-a/a.test.ts', '2-b/a.spec.ts'])
+    )
+  })
+
+  it('returns nothing when the pattern matches nothing', async () => {
+    setMockPaths('a.spec.ts')
+
+    expect(await sortedGlob('**/*.nope')).toEqual([])
   })
 })
 
