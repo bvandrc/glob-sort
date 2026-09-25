@@ -36,6 +36,7 @@
   },
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
   "source": "src/sortedGlob.ts",
   "exports": {
     ".": {
