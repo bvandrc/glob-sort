@@ -36,7 +36,6 @@
   },
   "license": "MIT",
   "type": "module",
-  "sideEffects": false,
   "source": "src/sortedGlob.ts",
   "exports": {
     ".": {
@@ -49,6 +48,7 @@
     "LICENSE",
     "README.md"
   ],
+  "sideEffects": false,
   "engines": {
     "node": ">=22"
   },
