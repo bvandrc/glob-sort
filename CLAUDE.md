@@ -2,7 +2,7 @@
 
 `glob-sort` — globs files and sorts them in a custom order, by numeric folder prefixes and caller-supplied string/regex rules. Useful for controlling test execution order in Cypress, Playwright, or Vitest. Published to npm, bundled by tsdown.
 
-- **Layout**: `src/sortedGlob.ts` is the whole package; unit tests live in `src/__tests__/`.
+- **Layout**: `src/sortedGlob.ts` is the whole package, with `src/typed-object.ts` its only helper module; unit tests live in `src/__tests__/`.
 - **Zero runtime dependencies** — keep `dependencies` empty.
 
 ## Code conventions
@@ -22,4 +22,5 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 ## Repo conventions
 
 - **Package manager**: pnpm. `npm install` writes a competing `package-lock.json` that CI ignores.
+- **Typed `Object` walks**: `typedKeys`, `typedEntries`, and `typedFromEntries`, exported from `src/typed-object.ts`, are ours. They are the builtins with the cast a call site would otherwise write by hand, so reach for one instead of asserting the result -- and leave `Object.keys`/`entries`/`fromEntries` alone where the widened type is what's wanted.
 - **Convention files**: `conventions/` is synced from https://github.com/bvandrc/bvandrc-conventions by `.github/workflows/sync-conventions.yml` and overwritten on every sync. Edit a rule upstream, never in that directory.
