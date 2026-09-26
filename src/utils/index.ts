@@ -1,5 +1,5 @@
 /**
- * @fileoverview Helpers for `sortedGlob.ts`.
+ * @fileoverview Helpers for `sorted-glob.ts`.
  */
 
 import type { Entries } from 'type-fest'

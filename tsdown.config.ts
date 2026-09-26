@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown'
 import pkg from './package.json' with { type: 'json' }
 
 export default defineConfig({
-  entry: { index: 'src/sortedGlob.ts' },
+  entry: { index: 'src/sorted-glob.ts' },
   target: 'es2023',
   format: ['esm'],
   clean: true,
