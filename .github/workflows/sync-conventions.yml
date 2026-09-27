@@ -14,6 +14,6 @@ jobs:
   sync:
     uses: bvandrc/bvandrc-conventions/.github/workflows/sync.yml@main
     with:
-      files: typescript.md ts-testing-all.md ts-unit-testing.md all.md biome.base.json
+      files: all.md typescript.md ts-testing-all.md ts-unit-testing.md biome.base.json
       apply-with-claude: true
     secrets: inherit
