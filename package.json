@@ -73,12 +73,12 @@
     "test:watch": "pnpm run test --watch",
     "test:coverage": "pnpm run test --coverage"
   },
-  "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "^2",
     "@types/node": "^24",
     "@vitest/coverage-v8": "^4",
     "@vitest/expect": "^4",
+    "es-toolkit": "^1",
     "memfs": "^4",
     "tsdown": "^0.22",
     "type-fest": "^5",
