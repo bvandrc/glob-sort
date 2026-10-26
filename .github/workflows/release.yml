@@ -1,0 +1,55 @@
+name: Release
+
+# Publishing a GitHub release stages the package at the version its
+# `package.json` carries -- bump that first, then tag the release `v<version>`.
+# The staged version goes live once approved on npmjs.com.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  # A release for a version npm already has -- one backfilled for a version
+  # published by hand -- stops here instead of failing the publish.
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.npm.outputs.published }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the tag matches package.json
+        run: test "v$(node -p 'require("./package.json").version')" = "${GITHUB_REF_NAME}"
+      - name: Check whether npm already has this version
+        id: npm
+        # Reads the output rather than the exit code: a lookup that fails for any
+        # other reason then goes on to publish, and npm refuses a real duplicate.
+        run: |
+          version="$(npm view "$(node -p 'require("./package.json").name')@${GITHUB_REF_NAME#v}" version 2> /dev/null || true)"
+          echo "published=$([ -n "$version" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: check
+    if: needs.check.outputs.published == 'false'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Signs the npm provenance statement, and authenticates the staged publish
+      # through npm trusted publishing.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      # Installs the pnpm version `packageManager` pins.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      # Staged, not published: the version goes live only once it's approved on
+      # npmjs.com with 2FA. `prepublishOnly` still runs the checks, the tests,
+      # and the build first. A release checks out its tag rather than a branch,
+      # which pnpm's git checks reject.
+      - run: pnpm stage publish --no-git-checks --provenance
