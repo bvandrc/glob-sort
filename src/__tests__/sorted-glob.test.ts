@@ -35,7 +35,8 @@ const mockFilePaths = (...paths: string[]) => {
 }
 
 /** The paths as the sorter returns them, so a case can compare against literals. */
-const normalizePaths = (paths: string[]) => paths.map((p) => path.normalize(p))
+const getNormalizedPaths = (paths: string[]) =>
+  paths.map((p) => path.normalize(p))
 
 type SortOrder = NonNullable<SortedGlobOptions['sortOrder']>
 
@@ -418,7 +419,7 @@ describe('sortedGlob', () => {
     // Alphabetically `10-c` would come second; the whole point of the prefix
     // is that it does not.
     expect(await sortedGlob('**/*.spec.ts')).toEqual(
-      normalizePaths(['1-a/a.spec.ts', '2-b/a.spec.ts', '10-c/a.spec.ts'])
+      getNormalizedPaths(['1-a/a.spec.ts', '2-b/a.spec.ts', '10-c/a.spec.ts'])
     )
   })
 
@@ -426,7 +427,7 @@ describe('sortedGlob', () => {
     mockFilePaths('2-b.spec.ts', '10-c.spec.ts', '1-a.spec.ts')
 
     expect(await sortedGlob('*.spec.ts')).toEqual(
-      normalizePaths(['1-a.spec.ts', '2-b.spec.ts', '10-c.spec.ts'])
+      getNormalizedPaths(['1-a.spec.ts', '2-b.spec.ts', '10-c.spec.ts'])
     )
   })
 
@@ -434,7 +435,7 @@ describe('sortedGlob', () => {
     mockFilePaths('zz/a.spec.ts', '9-later/a.spec.ts', 'aa/a.spec.ts')
 
     expect(await sortedGlob('**/*.spec.ts')).toEqual(
-      normalizePaths(['9-later/a.spec.ts', 'aa/a.spec.ts', 'zz/a.spec.ts'])
+      getNormalizedPaths(['9-later/a.spec.ts', 'aa/a.spec.ts', 'zz/a.spec.ts'])
     )
   })
 
@@ -442,7 +443,7 @@ describe('sortedGlob', () => {
     mockFilePaths('b.spec.ts', 'a.spec.ts', 'c.spec.ts')
 
     expect(await sortedGlob('*.spec.ts')).toEqual(
-      normalizePaths(['a.spec.ts', 'b.spec.ts', 'c.spec.ts'])
+      getNormalizedPaths(['a.spec.ts', 'b.spec.ts', 'c.spec.ts'])
     )
   })
 
@@ -450,7 +451,7 @@ describe('sortedGlob', () => {
     mockFilePaths('alpha.spec.ts', 'zebra-NEW.spec.ts')
 
     expect(await sortedGlob('*.spec.ts', { sortOrder: ['new'] })).toEqual(
-      normalizePaths(['zebra-NEW.spec.ts', 'alpha.spec.ts'])
+      getNormalizedPaths(['zebra-NEW.spec.ts', 'alpha.spec.ts'])
     )
   })
 
@@ -459,7 +460,7 @@ describe('sortedGlob', () => {
 
     // A regex is not lowercased first, so its own flags decide the casing.
     expect(await sortedGlob('*.spec.ts', { sortOrder: [/^zebra/] })).toEqual(
-      normalizePaths(['zebra-new.spec.ts', 'alpha.spec.ts'])
+      getNormalizedPaths(['zebra-new.spec.ts', 'alpha.spec.ts'])
     )
   })
 
@@ -468,14 +469,14 @@ describe('sortedGlob', () => {
 
     expect(
       await sortedGlob('*.spec.ts', { sortOrder: ['edit', 'new'] })
-    ).toEqual(normalizePaths(['edit.spec.ts', 'new.spec.ts']))
+    ).toEqual(getNormalizedPaths(['edit.spec.ts', 'new.spec.ts']))
   })
 
   it('sorts what no rule matched alphabetically, after what did', async () => {
     mockFilePaths('b.spec.ts', 'new.spec.ts', 'a.spec.ts')
 
     expect(await sortedGlob('*.spec.ts', { sortOrder: ['new'] })).toEqual(
-      normalizePaths(['new.spec.ts', 'a.spec.ts', 'b.spec.ts'])
+      getNormalizedPaths(['new.spec.ts', 'a.spec.ts', 'b.spec.ts'])
     )
   })
 
@@ -485,7 +486,7 @@ describe('sortedGlob', () => {
     // `beta` wins on the folder segment, so its file comes first even though
     // the paths compare the other way alphabetically.
     expect(await sortedGlob('**/*.spec.ts', { sortOrder: ['beta'] })).toEqual(
-      normalizePaths(['beta/a.spec.ts', 'alpha/z.spec.ts'])
+      getNormalizedPaths(['beta/a.spec.ts', 'alpha/z.spec.ts'])
     )
   })
 
@@ -493,7 +494,7 @@ describe('sortedGlob', () => {
     mockFilePaths('2-b/a.spec.ts', '1-a/a.test.ts')
 
     expect(await sortedGlob(['**/*.spec.ts', '**/*.test.ts'])).toEqual(
-      normalizePaths(['1-a/a.test.ts', '2-b/a.spec.ts'])
+      getNormalizedPaths(['1-a/a.test.ts', '2-b/a.spec.ts'])
     )
   })
 

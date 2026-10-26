@@ -15,4 +15,6 @@ Language-level rules, independent of framework or project. Framework-specific co
 - **Comments/JSDoc**: Describe *what* and *why* from the caller's perspective. Don't restate implementation or repeat what the type signature conveys. Keep to 1–2 lines. No hedge prefixes.
 - **Tooling**
   - **Linting and formatting**: Biome is the linter *and* formatter — no eslint/prettier here. Shared rules live in `./biome.base.json`, which the repo's own `biome.json` extends; keep repo-specific settings in that `biome.json` rather than editing the synced base.
-  - **es-toolkit**: Use `es-toolkit` functions when simpler than the builtin equivalents — especially `omit`/`pick`.
+- **Available packages**: Every TS repo should have these installed — check them before writing your own.
+  - **[es-toolkit](https://es-toolkit.dev)**: Utility functions, like a modern lodash (e.g. `omit`, `pick`, `groupBy`, `debounce`, and more). Often far more readable than the builtin equivalents, so reach for them.
+  - **[type-fest](https://github.com/sindresorhus/type-fest)**: Utility types (e.g. `SetOptional`, `SetRequired`, `Simplify`, `ValueOf`, `PartialDeep`, `MergeExclusive`, and more). Reach for these before hand-rolling a mapped or conditional type.

@@ -53,9 +53,14 @@
     "node": ">=22"
   },
   "packageManager": "pnpm@11.9.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "__c0": "====================[ Build & Development ]======================",
     "prepack": "pnpm build",
+    "prepublishOnly": "pnpm run check && pnpm test --run && pnpm run build",
     "build": "tsdown",
     "start": "tsdown --watch",
     "__c1": "====================[ Linting & Type Checking ]==================",
@@ -68,12 +73,12 @@
     "test:watch": "pnpm run test --watch",
     "test:coverage": "pnpm run test --coverage"
   },
-  "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "^2",
     "@types/node": "^24",
     "@vitest/coverage-v8": "^4",
     "@vitest/expect": "^4",
+    "es-toolkit": "^1",
     "memfs": "^4",
     "tsdown": "^0.22",
     "type-fest": "^5",
