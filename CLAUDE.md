@@ -20,6 +20,10 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 - `pnpm format` — Biome check/fix. `pnpm check` — the full gate: Biome plus `pnpm ts:check` (`tsc --noEmit`); it's what CI runs.
 - `pnpm test` — Vitest. `pnpm test:watch`, `pnpm test:coverage`.
 
+## Releasing
+
+Bump `version` in `package.json`, merge, then publish a GitHub release tagged `v<version>`. `.github/workflows/release.yml` checks the tag matches and runs `pnpm stage publish` with provenance, which leaves the version staged: approve it on npmjs.com with 2FA to publish it.
+
 ## Repo conventions
 
 - **Package manager**: pnpm. `npm install` writes a competing `package-lock.json` that CI ignores.
