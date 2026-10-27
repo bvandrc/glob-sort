@@ -3,7 +3,7 @@
 For repos that publish a package to npm, whatever the package is written in.
 
 - **Releasing**: Bump `version` in `package.json`, merge, then publish a GitHub release tagged `v<version>`. `.github/workflows/release.yml` checks the tag matches and runs `pnpm stage publish` with provenance, which leaves the version staged: approve it on npmjs.com with 2FA to publish it.
-  - **Never publish from a machine**: a local `npm publish` skips the tag, the provenance statement, and the 2FA approval, and leaves the npm version with no GitHub release to point back at.
+  - **Never publish from a machine**: a local `npm publish` skips the tag and the provenance statement, and leaves the npm version with no GitHub release to point back at.
   - **The release workflow is one file, copied whole**: every package carries the same `release.yml`, so a change to it (an action version, a step) goes to all of them at once rather than drifting per repo.
 - **Trusted publishing, no token**: npm authenticates the workflow through GitHub's OIDC token (`id-token: write`), configured as a trusted publisher on the package's npm settings page. There is no `NPM_TOKEN` secret to store or rotate, and none should be added.
 - **`package.json`**
