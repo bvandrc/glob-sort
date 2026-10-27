@@ -1,6 +1,6 @@
 # npm publishing conventions
 
-For repos that publish a package to npm. Stands alone, like `./all.md`: it holds whatever the package is written in.
+For repos that publish a package to npm, whatever the package is written in.
 
 - **Releasing**: Bump `version` in `package.json`, merge, then publish a GitHub release tagged `v<version>`. `.github/workflows/release.yml` checks the tag matches and runs `pnpm stage publish` with provenance, which leaves the version staged: approve it on npmjs.com with 2FA to publish it.
   - **Never publish from a machine**: a local `npm publish` skips the tag, the provenance statement, and the 2FA approval, and leaves the npm version with no GitHub release to point back at.
