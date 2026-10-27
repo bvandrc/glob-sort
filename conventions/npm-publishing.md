@@ -11,4 +11,4 @@ For repos that publish a package to npm, whatever the package is written in.
   - **`files`**: An allowlist of what ships (usually `dist` and little else), never an `.npmignore` blocklist, so a new top-level file stays out of the tarball until someone decides it belongs there.
   - **`prepublishOnly`**: Runs the repo's check, its tests, and its build, in that order. It is the last gate before a version is staged, and the release workflow relies on it rather than repeating those steps.
 - **Release notes are the changelog**: write what changed for consumers on the GitHub release itself. No `CHANGELOG.md` alongside it — two copies of the same history drift.
-- **Versioning**: semver against the package's public API — what its entrypoints export, and anything else a consumer can observe, such as the shape of data it persists. Removing or renaming an export is a breaking change and needs a major bump.
+- **Versioning**: semver against the package's public API — what its entrypoints export, and anything else a consumer can observe, such as the shape of data it persists.
