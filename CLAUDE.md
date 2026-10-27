@@ -13,16 +13,13 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 @conventions/ts-testing-all.md — testing rules shared by every TypeScript suite: test IDs, naming, assertions
 @conventions/ts-unit-testing.md — unit test layout, naming, fixtures, and assertions
 @conventions/all.md — practice for every repo: branches, formatting, markdown, PR reviews
+@conventions/npm-publishing.md — releasing, trusted publishing, `package.json` publish fields, versioning
 
 ## Commands
 
 - `pnpm build` — tsdown bundle. `pnpm start` — tsdown in watch mode.
 - `pnpm format` — Biome check/fix. `pnpm check` — the full gate: Biome plus `pnpm ts:check` (`tsc --noEmit`); it's what CI runs.
 - `pnpm test` — Vitest. `pnpm test:watch`, `pnpm test:coverage`.
-
-## Releasing
-
-Bump `version` in `package.json`, merge, then publish a GitHub release tagged `v<version>`. `.github/workflows/release.yml` checks the tag matches and runs `pnpm stage publish` with provenance, which leaves the version staged: approve it on npmjs.com with 2FA to publish it.
 
 ## Repo conventions
 
