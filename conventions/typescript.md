@@ -12,9 +12,9 @@ Language-level rules, independent of framework or project. Framework-specific co
   - camelCase for keys that are typed properties of an entry, where the casing is required to satisfy a type declared elsewhere.
   - camelCase for function-valued keys (e.g. `SELECTORS.TASK_CARD.rankFieldBadge(field)`).
 - **Exhaustive records**: Any record keyed by a union — constant or built at runtime — should be declared with `satisfies Record<UnionKeys, ValuesType>` so a missing key is a type error.
-- **Comments/JSDoc**: Describe *what* and *why* from the caller's perspective. Don't restate implementation or repeat what the type signature conveys. Keep to 1–2 lines. No hedge prefixes.
+- **Comments/JSDoc**: Describe _what_ and _why_ from the caller's perspective. Don't restate implementation or repeat what the type signature conveys. Keep to 1–2 lines. No hedge prefixes.
 - **Tooling**
-  - **Linting and formatting**: Biome is the linter *and* formatter — no eslint/prettier here. Shared rules live in `./biome.base.json`, which the repo's own `biome.json` extends; keep repo-specific settings in that `biome.json` rather than editing the synced base.
+  - **Linting and formatting**: Biome is the linter _and_ formatter — no eslint/prettier here. Shared rules live in `./biome.base.json`, which the repo's own `biome.json` extends; keep repo-specific settings in that `biome.json` rather than editing the synced base.
 - **Available packages**: Every TS repo should have these installed — check them before writing your own.
   - **[es-toolkit](https://es-toolkit.dev)**: Utility functions, like a modern lodash (e.g. `omit`, `pick`, `groupBy`, `debounce`, and more). Often far more readable than the builtin equivalents, so reach for them.
   - **[type-fest](https://github.com/sindresorhus/type-fest)**: Utility types (e.g. `SetOptional`, `SetRequired`, `Simplify`, `ValueOf`, `PartialDeep`, `MergeExclusive`, and more). Reach for these before hand-rolling a mapped or conditional type.

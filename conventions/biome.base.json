@@ -34,6 +34,11 @@
       "trailingCommas": "es5"
     }
   },
+  "yaml": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {

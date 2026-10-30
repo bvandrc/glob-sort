@@ -28,7 +28,7 @@ Applies to every repo, independent of language or framework.
 
 ## Comments
 
-- **Where a comment goes**: A doc comment (i.e., above a function) is for *callers* — what the thing is/does, what it gives back, what it costs them, etc. Any note about *how* it does that, or explaining a cast, a workaround, or a library's behaviour, etc., goes in a line comment *within* the function *at* the code it describes, since it doesn't need to be known to the caller. This goes for any function, internal to a file or exported.
+- **Where a comment goes**: A doc comment (i.e., above a function) is for _callers_ — what the thing is/does, what it gives back, what it costs them, etc. Any note about _how_ it does that, or explaining a cast, a workaround, or a library's behaviour, etc., goes in a line comment _within_ the function _at_ the code it describes, since it doesn't need to be known to the caller. This goes for any function, internal to a file or exported.
 - **Doc comment shape**: A doc comment that runs to more than one line opens with its summary alone — what the thing is, usually one sentence — then a blank line before any specifics: conditions, defaults, the reason it's built the way it is. A comment that is only a summary, however many lines it wraps to, needs no gap.
 
 ## Writing
