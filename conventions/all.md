@@ -34,4 +34,3 @@ Applies to every repo, independent of language or framework.
 ## Writing
 
 - **Oxford comma**: A list of three or more takes a comma before its final `and` or `or` — in prose, comments, documentation, and commit messages alike.
-- **Markdown**: Don't hard-wrap prose. Keep each paragraph, list item, and table row on one line and let the editor wrap it. Manual line breaks mean a one-word edit reflows the whole block, so the diff shows a rewritten paragraph instead of the words that actually changed.
