@@ -1,3 +1,6 @@
+// Shared by every repo that syncs bvandrc-conventions, extended by its own
+// biome.json(c). Settings only a repo can know (files.includes, test-file
+// overrides, framework rules) belong there, not here.
 {
   "assist": {
     "actions": {
@@ -21,6 +24,8 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
+  // Stated explicitly, defaults included, so a change to Biome's defaults
+  // can't move them.
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2,
@@ -34,19 +39,31 @@
       "trailingCommas": "es5"
     }
   },
+  // Biome formats Markdown by default from 2.6.
   "markdown": {
     "parser": {
+      // Off by default, which reads a leading `---` block as a thematic break
+      // and a heading, and reformats it into one.
       "frontmatter": true
     },
     "formatter": {
+      // Never hard-wrap prose: a wrapped paragraph is unwrapped, not passed.
+      // This also joins consecutive lines of plain text, so line-by-line content
+      // (like CLAUDE.md's @conventions imports) goes in a list or a table.
       "proseWrap": "never"
     }
   },
+  // Biome formats YAML by default from 2.6. Single quotes match the
+  // JavaScript style above.
   "yaml": {
     "formatter": {
       "quoteStyle": "single"
     }
   },
+  // Raises rules from warning to error, or turns on ones `recommended` leaves
+  // off. It stops short of every rule the conventions state, since repos vary:
+  // noDefaultExport is absent, and useFilenamingConvention keeps its defaults,
+  // which accept both a kebab-case util and a PascalCase component.
   "linter": {
     "enabled": true,
     "rules": {
@@ -84,6 +101,7 @@
         "useDefaultSwitchClause": "error",
         "useEnumInitializers": "error",
         "useFilenamingConvention": "error",
+        // typescript.md: `import type` for type-only imports.
         "useImportType": "error",
         "useNumberNamespace": "error",
         "useNumericSeparators": "error",
