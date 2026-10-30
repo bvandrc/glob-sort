@@ -9,11 +9,11 @@
 
 Conventions live outside this file, synced from https://github.com/bvandrc/bvandrc-conventions — follow all of them:
 
-@conventions/typescript.md — language-level TypeScript/JavaScript rules
-@conventions/ts-testing-all.md — testing rules shared by every TypeScript suite: test IDs, naming, assertions
-@conventions/ts-unit-testing.md — unit test layout, naming, fixtures, and assertions
-@conventions/all.md — practice for every repo: branches, formatting, markdown, PR reviews
-@conventions/npm-publishing.md — releasing, trusted publishing, `package.json` publish fields, versioning
+- @conventions/typescript.md — language-level TypeScript/JavaScript rules
+- @conventions/ts-testing-all.md — testing rules shared by every TypeScript suite: test IDs, naming, assertions
+- @conventions/ts-unit-testing.md — unit test layout, naming, fixtures, and assertions
+- @conventions/all.md — practice for every repo: branches, formatting, writing, PR reviews
+- @conventions/npm-publishing.md — releasing, trusted publishing, `package.json` publish fields, versioning
 
 ## Commands
 
