@@ -47,12 +47,12 @@ import { sortedGlob } from 'glob-sort'
 const specs = await sortedGlob('cypress/tests/**/*.spec*', {
   sortOrder: [
     // run in this order (anything not matching will come after, alphabetically)
-    'setup',              // Exact match (case-insensitive)
-    /new(?!-special)/i,   // e.g. "new.spec" before "new-special.spec"
+    'setup', // Exact match (case-insensitive)
+    /new(?!-special)/i, // e.g. "new.spec" before "new-special.spec"
     'new',
     'edit',
-    /^delete/i,           // starts with "delete"
-    /^(?!.*history)/i,    // does not contain "history" (place last in each folder)
+    /^delete/i, // starts with "delete"
+    /^(?!.*history)/i, // does not contain "history" (place last in each folder)
     'view',
   ],
 })
@@ -110,7 +110,7 @@ const specs = sortedGlobSync('cypress/tests/**/*.spec.ts', {
     'entree',
     'appetizer',
     'user',
-    /^(?!.*history)/i,   // Exclude "history" (pushes to end)
+    /^(?!.*history)/i, // Exclude "history" (pushes to end)
     /new(?!-?special)/i, // "new" before "new-special"
     'new',
     'edit',

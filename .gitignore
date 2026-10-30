@@ -1,6 +1,6 @@
 
 *.log
-Coverage
+coverage
 node_modules/
 dist/
 *.tgz
