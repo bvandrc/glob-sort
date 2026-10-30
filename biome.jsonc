@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["./conventions/biome.base.json"],
+  "extends": ["./conventions/biome.base.jsonc"],
   "files": {
     "includes": [
       "**",
