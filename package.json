@@ -52,7 +52,7 @@
   "engines": {
     "node": ">=22"
   },
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@12.15.0",
   "publishConfig": {
     "access": "public",
     "provenance": true
@@ -74,15 +74,15 @@
     "test:coverage": "pnpm run test --coverage"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2",
+    "@biomejs/biome": "^2.6",
     "@types/node": "^24",
-    "@vitest/coverage-v8": "^4",
-    "@vitest/expect": "^4",
+    "@vitest/coverage-v8": "^5",
+    "@vitest/expect": "^5",
     "es-toolkit": "^1",
     "memfs": "^4",
-    "tsdown": "^0.22",
+    "tsdown": "^0.23",
     "type-fest": "^5",
     "typescript": "^7",
-    "vitest": "^4"
+    "vitest": "^5"
   }
 }

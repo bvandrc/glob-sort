@@ -10,37 +10,37 @@ jobs:
   test:
     name: Lint & Test
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [22.x, 24.x, 26.x]
-    
+
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v7
+
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      
+        uses: pnpm/action-setup@v6
+
       - name: Get pnpm store path
         id: pnpm-store-path
         run: echo "dir=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-      
+
       - name: Cache pnpm dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-store-path.outputs.dir }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Lint package.json
         uses: bvandrc/lint-package-json@v2
 

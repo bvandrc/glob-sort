@@ -10,7 +10,7 @@ export default defineConfig({
   dts: {
     // oxc generates declarations without touching TypeScript's compiler API, which
     // TS7 no longer exposes in a stable form
-    oxc: true,
+    generator: 'oxc',
     // declaration maps are omitted: rolldown-plugin-dts always strips sourcesContent,
     // so they'd only resolve if src were published
     sourcemap: false,
