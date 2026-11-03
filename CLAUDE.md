@@ -24,5 +24,4 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 ## Repo conventions
 
 - **Package manager**: pnpm. `npm install` writes a competing `package-lock.json` that CI ignores.
-- **Typed `Object` walks**: `objectKeys`, `objectEntries`, and `objectFromEntries` come from `ts-extras`. They are the builtins with the cast a call site would otherwise write by hand, so reach for one instead of asserting the result -- and leave `Object.keys`/`entries`/`fromEntries` alone where the widened type is what's wanted.
 - **Convention files**: `conventions/` is synced from https://github.com/bvandrc/bvandrc-conventions by `.github/workflows/sync-conventions.yml` and overwritten on every sync. Edit a rule upstream, never in that directory.
