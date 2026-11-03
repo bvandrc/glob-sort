@@ -1,11 +1,6 @@
 name: PR CI
 
 # The jobs that only run on a pull request.
-#
-# Note: Kept out of ci.yml because GitHub creates a check run for
-# every job in a workflow before it evaluates `if:`, so a single file
-# serving both push and pull_request reports the other event's jobs as
-# skipped checks on every PR.
 on:
   pull_request:
 
