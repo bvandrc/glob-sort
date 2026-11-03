@@ -1,8 +1,6 @@
 name: PR CI
 
-# The jobs that only run on a pull request. Anything that reports goes to the
-# run's job summary rather than a comment: a bot comment notifies on every pull
-# request, and the summary is one click away from the check.
+# The jobs that only run on a pull request.
 #
 # Note: Kept out of ci.yml because GitHub creates a check run for
 # every job in a workflow before it evaluates `if:`, so a single file
