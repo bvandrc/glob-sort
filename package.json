@@ -80,7 +80,7 @@
     "@vitest/expect": "^5",
     "es-toolkit": "^1",
     "memfs": "^4",
-    "ts-extras": "^1",
+    "ts-extras": "^2",
     "tsdown": "^0.23",
     "type-fest": "^5",
     "typescript": "^7",
