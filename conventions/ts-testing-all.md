@@ -1,29 +1,29 @@
 # TypeScript testing conventions (all suites)
 
-Builds on the language-level rules in `./typescript.md` — follow those too. Holds for any TypeScript test suite in the repo, Vitest and Playwright alike.
+Builds on `./typescript.md`; follow it too. Holds for every TypeScript test suite, Vitest and Playwright alike.
 
-- **Destructuring from the Selectors registry**: See `./all.md`'s Test ID registry rule for the registry itself — this is TypeScript-specific on top of it, since not every language's test suites destructure. A deeply nested registry turns a call site into a long chain — `getByTestId(SELECTORS.SAVE_DIALOG.CONFIRM_DELETE_DIALOG.SUBMIT_BTN)` — that wraps lines and repeats the same prefix down a test file. Pull a leaf out to a local const where doing so doesn't cost the reader the cue that it's a selector rather than some other fixture.
-  - This isn't all-or-nothing at the leaf — a chain can stop destructuring at any point along it. Pulling out just the top namespace (`const { SAVE_DIALOG } = SELECTORS`, then using `SAVE_DIALOG.CONFIRM_DELETE_DIALOG.SUBMIT_BTN`) is close to always worth doing on its own, since the bare `SELECTORS.` prefix rarely carries information a reader needs. What follows mostly decides whether to go one level further than that, down to the leaf itself.
-  - Destructure a leaf when either of these holds, and both are fine to lean on together:
-    - **The name alone says what it is**, even stripped of its `SELECTORS.X.Y` prefix, in any suite — For example, `CONFIRM_DELETE_DIALOG` reads as a selector on its own whether or not the suite around it has anything to do with that dialog, and thus, requires no chained prefixes.
-    - **The scope is narrow enough** that the reader can see the whole cluster is selectors from where it was declared — the top of a file that's entirely about one component, or inside the one `describe`/test block that concerns it. This is what lets a suite named `ConfirmDeleteDialog` destructure further than `CONFIRM_DELETE_DIALOG` itself would allow elsewhere: `const { CONFIRM_BTN, CANCEL_BTN } = CONFIRM_DELETE_DIALOG` reads fine there, where `CONFIRM_BTN`/`CANCEL_BTN` alone would be too generic to place in a suite about anything else.
-  - Leave it dotted off its namespace instead of destructured that last step when either of these holds:
-    - Its name is generic enough to go ambiguous once pulled out of its namespace (`SELF`, `DIALOG`).
-    - The destructure would be broad enough to gather unrelated groups at module scope, defeating the same cue a narrow one buys.
-  - This is a judgment call, not a mechanical rule a linter could check — when a destructured name would read as any other test constant, leave that last step dotted instead.
-- **Naming a test's values**: A constant fixture is `UPPER_CASE` — data a fixture builder produced, or a literal a case pins as fixed reference data. `camelCase` is for everything that isn't a fixture — what the module under test handed back, what _constructs_ the subject rather than feeding it, and a local inside a fixture helper's own body. Coming back from a function is not what earns the caps — reading it that way would shout every line and spend the one distinction the casing carries.
-- **Naming a test's helpers**: A helper declared inside a test file is named for what it _does_ rather than for what it _returns_ — verb first, prefixed by which kind of helper it is (see below). The main point of this is that a reader can tell the test's own scaffolding apart from the source functions a test file imports, which may not always be only the one under test: cases may often call a neighboring export to set something up, process a result, etc.
-  - `render*` (e.g. `renderDialog`, `renderWithRouter`) — renders the subject. Vitest/Testing-Library only: a Playwright spec drives a real page instead, so it has no rendering step to name this way.
-  - `build*` (e.g. `buildUser`, `buildItems`) — builds and returns a fixture that is a constant object, array, or primitive that tests use as input / reference data. It should hold no UI query or side effect of its own.
-  - `create*` (e.g. `createTempFile`, `createUser`) — makes something with side effects on the subject or on a fixture, where a `build*` only hands back a constant that could, for example, be passed to a `create*`.
-  - `mock*` (e.g. `mockFetch`, `mockLogger`) — mocks a fixture rather than building one, i.e. where a stand-in is what the case needs instead of the real thing (`vi.fn()`, a Playwright route mock, etc.).
-  - `get*`, `query*`, `find*` (e.g. `getRow`, `queryBanner`) — for one wrapping the matching query call: Testing Library's `screen.getByX`/`queryByX`/`findByX`, or a Playwright locator like `page.getByTestId`.
-  - `get*` (e.g. `getUserIds`, reading a list of ids off a list of users) also covers one with no UI query of its own that pulls something out of the function's input (or out of a fixture in the scope) and returns something for the test — e.g. getting a deep property of the input, transforming the input into something more testable, etc.
-  - For one that acts, prefix with the verb itself (`clickRow`, `typeName`, `submitForm`).
-  - A helper that wraps one function and returns what it returns takes that function's name (e.g. `parse` for `parseConfig`, `evaluate` for `evaluateFilters`). This matters most where the wrapped thing is what the test block is testing.
-  - Adhering to these rules should fulfil all/most cases, but there may be occasional exceptions. However, never use naming:
-    - A bare noun (`list`, `row`)
-    - A word a type or the domain already owns — more importantly, a function the domain already owns
-- **Asserting on an object**: Consecutive `expect`s picking properties off the same object are one `expect(obj).toMatchObject({ ... })` instead — a failure then shows the whole object against what was expected, rather than the first property that happened to differ. `expect.any(Date)` and friends cover a field whose exact value the test can't name. What a per-assertion message would have said goes in a line comment beside the property it explains.
-- **Asserting over a list of values**: A case that repeats one assertion across several inputs loops rather than restating it, and passes the value as the assertion message so a failure still names which one broke. Keep the reason a particular input is in the list as a comment beside it.
-- **Fixture TS types**: A test builds its fixtures with the types the source already declares, never a looser local shape or an `as` cast to reach them — a fixture the app could never hold should fail to compile, and `satisfies` is what checks a literal without widening it. A test that deliberately feeds a value the types refuse says so with `// @ts-expect-error` and a line on what it is testing, which is also what fails once the type stops refusing it.
+- **Frontend testing**
+  - **Unit vs end-to-end**: Where a repo has both, a pure function's edge cases go in its unit test, especially ones that would need a large setup through the UI. End-to-end keeps the wiring: that the UI calls the function and renders what it returns. A case whose result changes what the user sees, in a way worth pinning down, still earns an end-to-end test.
+  - **Test ID registry**: Every `data-testid` is defined in one registry before it is used, and every suite imports that one: `shared/test-support/selectors.ts` in a repo with unit and end-to-end tests, `playwright/support/constants/selectors.ts` where end-to-end is the only suite.
+    - Nest by component.
+    - Name a container's own testid `SELF`.
+    - A selector only one test would reach for, being odd or complicated, can stay in that test. One another test could want goes in the registry the first time it is written.
+  - **Layout choices**: Don't test plain layout, like where an element sits or what it's inside. Test user actions, edge cases, and state changes instead.
+  - **Locators**: `data-testid` first. Text, role, and class locators only where a testid isn't an option: third-party markup, or an assertion whose point is the visible text or accessible role.
+- **Destructuring from the Selectors registry**: Pull the top namespace out almost always (`const { SAVE_DIALOG } = SELECTORS`). Go on down to a leaf where either holds:
+  - **The name alone says it's a selector** in any suite (`CONFIRM_DELETE_DIALOG`).
+  - **The scope is narrow enough** to show the cluster is selectors: a file about one component, or the one `describe` about it. In a `ConfirmDeleteDialog` suite, `const { CONFIRM_BTN, CANCEL_BTN } = CONFIRM_DELETE_DIALOG` reads fine.
+  - Leave the last step dotted where the name is generic (`SELF`, `DIALOG`), or the destructure would gather unrelated groups at module scope. It's a judgment call: stop where a name would read as any other test constant.
+- **Naming a test's values**: `UPPER_CASE` for a constant fixture: data a builder produced, or a literal pinned as reference data. `camelCase` for everything else: what the module under test returned, what constructs the subject, and locals inside a fixture helper. Being returned from a function doesn't earn caps.
+- **Naming a test's helpers**: A helper declared in a test file is named verb first for what it does, with the prefix for its kind, so it reads apart from the source functions the file imports.
+  - `render*`: renders the subject. Vitest only.
+  - `build*`: returns a constant fixture (object, array, or primitive) used as input or reference data, with no UI query or side effect.
+  - `create*`: makes something with side effects on the subject or a fixture.
+  - `mock*`: a stand-in (`vi.fn()`, a Playwright route mock).
+  - `get*`, `query*`, `find*`: wraps the matching Testing Library query or Playwright locator. `get*` also covers pulling or transforming something out of the input, or a fixture in scope.
+  - An action takes its own verb (`clickRow`, `typeName`, `submitForm`).
+  - A helper that wraps one function and returns its result takes that function's name (`parse` for `parseConfig`), most of all where it's the function under test.
+  - Exceptions happen, but never a bare noun (`list`, `row`), or a name a type or domain function already owns.
+- **Asserting on an object**: Consecutive `expect`s on one object's properties become one `expect(obj).toMatchObject({ ... })`, with `expect.any(Date)` and friends for values the test can't name. What a per-assertion message would have said goes in a line comment beside the property.
+- **Asserting over a list of values**: Loop rather than repeat the assertion, passing the value as the assertion message. A comment beside each input says why it's in the list.
+- **Fixture TS types**: Build fixtures with the source's own types, never a looser local shape or an `as` cast; `satisfies` checks a literal without widening it. A value the types deliberately refuse gets `// @ts-expect-error` and a line on what it tests.
